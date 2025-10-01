@@ -1,61 +1,71 @@
+import mongoose from "mongoose";
 import aberturaChamado from "../models/chamados.js";
 
 
 class ChamadosController {
 
-static async listarChamados (req , res) {
+static async listarChamados (req , res, _next) {
     try{
         const listaNumerosChamados = await aberturaChamado.find({})
         res.status(200).json(listaNumerosChamados)
     }catch (err) {  
-        res.status(500).json({message: `${err.message} - falha na listagem dos chamados`})
+        _next(err)
 
     }
  
 }
 
-static async listarChamadosPorId (req , res) {
+static async listarChamadosPorId (req , res, _next) {
     try{
         const id = req.params.id
+
         const listaChamadoId = await aberturaChamado.findById(id)
-        res.status(200).json(listaChamadoId)
+
+        if(listaChamadoId !== null){
+            res.status(200).json(listaChamadoId)
+
+        }else {
+            res.status(404).send({message: "falha na listagem dos chamados"})
+        }
     }catch (err) {  
-        res.status(500).json({message: `${err.message} - falha na listagem dos chamados`})
+    _next(err)
 
     }
  
 }
 
-static async criarChamado (req, res) {
+static async criarChamado (req, res, _next) {
     try {
     const novoChamado = await aberturaChamado.create(req.body)
     res.status(201).json({message: "Chamado criado com sucesso", aberturaChamado, novoChamado})
 
     }
     catch (err) {
-    res.status(500).json({message: `${err.message} - falha ao criar chamado`})
+        _next(err)
     }
 }
 
-static async atualizarChamados (req , res) {
+static async atualizarChamados (req , res, _next) {
     try{
         const id = req.params.id
+
         await aberturaChamado.findByIdAndUpdate(id, req.body)
+
         res.status(200).json({message: "chamado atualizado"})
     }catch (err) {  
-        res.status(500).json({message: `${err.message} - falha na listagem dos chamados`})
+        _next(err)
 
     }
  
 }
 
-static async apagarChamado (req , res) {
+static async apagarChamado (req , res, _next) {
     try{
         const id = req.params.id
         await aberturaChamado.findByIdAndDelete(id)
         res.status(200).json({message: "chamado apagado com sucesso"})
     }catch (err) {  
-        res.status(500).json({message: `${err.message} - falha`})
+        _next(err)
 
     }
  
