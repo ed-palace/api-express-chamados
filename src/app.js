@@ -3,6 +3,7 @@ import conectaNaBase from "./config/dbConnect.js"
 import routes from "./routes/index.js"  
 import mongoose from "mongoose";
 import manipulador404 from "./middlewares/manipulador404.js";
+import NaoEncontrado from "./middlewares/naoEncontrado.js";
 
 
 
@@ -28,9 +29,12 @@ app.use((err, req, res, _next) => {
     } else if (err instanceof mongoose.Error.ValidationError){
         const messageErro = Object.values(err.errors).map(err => err.message).join("; ")
         res.status(400).send({message: `Os seguintes erros foram encontrados ${messageErro}`})
-    }else {
+    } else if (err instanceof NaoEncontrado) {
+        res.status(404).send({message: 404 , error: err.message})
+    }   
+    else {
         res.status(500).send({message: "Erro interno do servidor"}) 
-    }
+    } 
 } )
 
 export default app

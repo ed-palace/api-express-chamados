@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import aberturaChamado from "../models/chamados.js";
+import NaoEncontrado from "../middlewares/naoEncontrado.js";
 
 
 class ChamadosController {
@@ -25,7 +26,7 @@ static async listarChamadosPorId (req , res, _next) {
             res.status(200).json(listaChamadoId)
 
         }else {
-            res.status(404).send({message: "falha na listagem dos chamados"})
+            _next(new NaoEncontrado())
         }
     }catch (err) {  
     _next(err)

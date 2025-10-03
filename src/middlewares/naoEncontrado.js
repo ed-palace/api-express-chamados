@@ -1,6 +1,7 @@
 class NaoEncontrado extends Error {
-    constructor() {
-        super("Pagina nao encontrada" , 404)
+    constructor(message = "Pagina nao encontrada") {
+        super(message , 404)
     }
 }
 
+export default NaoEncontrado
